@@ -59,9 +59,11 @@ module "rds_proxy" {
 
   auth = {
     master = {
-      description = "Aurora Master Credentials (managed by Aurora)"
-      secret_arn  = tolist(module.aurora.cluster_master_user_secret)[0].secret_arn
-      iam_auth    = "DISABLED"
+      description               = "Aurora Master Credentials (managed by Aurora)"
+      secret_arn                = tolist(module.aurora.cluster_master_user_secret)[0].secret_arn
+      iam_auth                  = "DISABLED"
+      auth_scheme               = "SECRETS"
+      client_password_auth_type = var.proxy_client_password_auth_type
     }
   }
 

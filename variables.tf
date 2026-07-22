@@ -86,3 +86,9 @@ variable "serverless_max_capacity" {
   type    = number
   default = 4
 }
+
+variable "proxy_client_password_auth_type" {
+  type        = string
+  description = "Client password auth type for the RDS Proxy. Use MYSQL_CACHING_SHA2_PASSWORD for MySQL 8.x, MYSQL_NATIVE_PASSWORD for 5.7."
+  default     = "MYSQL_CACHING_SHA2_PASSWORD"
+}
