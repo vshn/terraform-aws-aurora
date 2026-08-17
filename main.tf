@@ -18,10 +18,12 @@ module "aurora" {
 
   cluster_db_instance_parameter_group_name = aws_db_parameter_group.aurora_parameter_group.name
 
-  database_name                        = var.db_name
-  master_username                      = var.db_username
-  manage_master_user_password          = true
-  manage_master_user_password_rotation = false
+  database_name                                          = var.db_name
+  master_username                                        = var.db_username
+  manage_master_user_password                            = true
+  manage_master_user_password_rotation                   = var.manage_master_user_password_rotation
+  master_user_password_rotate_immediately                = false
+  master_user_password_rotation_automatically_after_days = var.master_user_password_rotation_automatically_after_days
 
   serverlessv2_scaling_configuration = {
     min_capacity = var.serverless_min_capacity
