@@ -23,7 +23,7 @@ module "aurora" {
     parameters = [
       {
         name         = "require_secure_transport"
-        value        = "1"
+        value        = "ON"
         apply_method = "immediate"
       }
     ]
