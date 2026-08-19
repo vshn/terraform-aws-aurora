@@ -99,6 +99,12 @@ variable "master_user_password_rotation_automatically_after_days" {
   default     = 7
 }
 
+variable "enforce_db_tls" {
+  type        = bool
+  description = "Enforce TLS for connections to the Aurora cluster."
+  default     = true
+}
+
 variable "proxy_client_password_auth_type" {
   type        = string
   description = "Client password auth type for the RDS Proxy. Use MYSQL_CACHING_SHA2_PASSWORD for MySQL 8.x, MYSQL_NATIVE_PASSWORD for 5.7."
