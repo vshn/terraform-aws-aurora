@@ -18,6 +18,17 @@ module "aurora" {
 
   cluster_db_instance_parameter_group_name = aws_db_parameter_group.aurora_parameter_group.name
 
+  cluster_parameter_group = var.enforce_db_tls ? {
+    family = "aurora-mysql8.0"
+    parameters = [
+      {
+        name         = "require_secure_transport"
+        value        = "1"
+        apply_method = "immediate"
+      }
+    ]
+  } : null
+
   database_name                                          = var.db_name
   master_username                                        = var.db_username
   manage_master_user_password                            = true
