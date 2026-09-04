@@ -1,3 +1,18 @@
+locals {
+  # Cluster parameters combine TLS enforcement and (optionally) audit logging. Advanced auditing
+  # params are dynamic, so apply_method "immediate" avoids a reboot.
+  cluster_parameters = concat(
+    var.enforce_db_tls ? [
+      { name = "require_secure_transport", value = "ON", apply_method = "immediate" },
+    ] : [],
+    var.enable_audit_log ? [
+      { name = "server_audit_logging", value = "1", apply_method = "immediate" },
+      { name = "server_audit_events", value = "CONNECT,QUERY_DCL,QUERY_DDL", apply_method = "immediate" },
+      { name = "slow_query_log", value = "1", apply_method = "immediate" },
+    ] : [],
+  )
+}
+
 module "aurora" {
   source  = "terraform-aws-modules/rds-aurora/aws"
   version = "10.2.0"
@@ -18,16 +33,12 @@ module "aurora" {
 
   cluster_db_instance_parameter_group_name = aws_db_parameter_group.aurora_parameter_group.name
 
-  cluster_parameter_group = var.enforce_db_tls ? {
-    family = "aurora-mysql8.0"
-    parameters = [
-      {
-        name         = "require_secure_transport"
-        value        = "ON"
-        apply_method = "immediate"
-      }
-    ]
+  cluster_parameter_group = length(local.cluster_parameters) > 0 ? {
+    family     = "aurora-mysql8.0"
+    parameters = local.cluster_parameters
   } : null
+
+  enabled_cloudwatch_logs_exports = var.enabled_cloudwatch_logs_exports
 
   database_name                                          = var.db_name
   master_username                                        = var.db_username
