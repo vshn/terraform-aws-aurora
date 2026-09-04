@@ -105,6 +105,18 @@ variable "enforce_db_tls" {
   default     = true
 }
 
+variable "enabled_cloudwatch_logs_exports" {
+  type        = list(string)
+  description = "Log types to export to CloudWatch Logs (e.g. audit, error, general, slowquery). The audit log requires enable_audit_log."
+  default     = []
+}
+
+variable "enable_audit_log" {
+  type        = bool
+  description = "Enable Aurora MySQL advanced auditing (server_audit_logging) capturing CONNECT + DCL/DDL events, plus the slow query log. Export via enabled_cloudwatch_logs_exports = [\"audit\", \"slowquery\", ...]."
+  default     = false
+}
+
 variable "proxy_client_password_auth_type" {
   type        = string
   description = "Client password auth type for the RDS Proxy. Use MYSQL_CACHING_SHA2_PASSWORD for MySQL 8.x, MYSQL_NATIVE_PASSWORD for 5.7."
