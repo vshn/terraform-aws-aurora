@@ -1,0 +1,18 @@
+{
+  "template": "https://github.com/vshn/terraform-module-template",
+  "commit": "5fb2621293fab7993be9edc4ee9808be6d97c4d4",
+  "checkout": null,
+  "context": {
+    "cookiecutter": {
+      "project_slug": "terraform-aws-aurora",
+      "description": "Terraform Module for AWS Aurora",
+      "_copy_without_render": [
+        ".github/workflows/*"
+      ],
+      "skip": "README.md",
+      "_template": "https://github.com/vshn/terraform-module-template",
+      "_commit": "5fb2621293fab7993be9edc4ee9808be6d97c4d4"
+    }
+  },
+  "directory": null
+}

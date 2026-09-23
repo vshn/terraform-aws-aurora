@@ -1,0 +1,76 @@
+name: Cruft update
+
+permissions:
+  contents: write
+  pull-requests: write
+
+on:
+  schedule:
+    - cron: "0 4 * * *"   # Daily at 04:00 UTC
+  workflow_dispatch:
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      BRANCH: chore/cruft-update
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          ssh-key: ${{ secrets.VSHNBOT_TF_MODULE_SSH_KEY }}
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.x"
+
+      - name: Install cruft
+        run: pip install cruft
+
+      - name: Check for template updates
+        id: check
+        run: |
+          if cruft check; then
+            echo "outdated=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "outdated=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Apply update, push over SSH, open PR
+        if: steps.check.outputs.outdated == 'true'
+        run: |
+          set -euo pipefail
+
+          git config user.name  "vshnbot"
+          git config user.email "tech+github@vshn.ch"
+
+          git switch -C "$BRANCH"
+          cruft update --skip-apply-ask
+
+          git add -A
+          if git diff --cached --quiet; then
+            echo "cruft update produced no changes at all; nothing to do."
+            exit 0
+          fi
+          git commit -m "chore: sync with module template"
+
+          BASE="$(gh repo view --json defaultBranchRef -q .defaultBranchRef.name)"
+
+          # Skip PR if the only change is the cruft pin (.cruft.json)
+          if [ -z "$(git diff --name-only "origin/$BASE"...HEAD -- . ':(exclude).cruft.json')" ]; then
+            echo "Only .cruft.json changed — no meaningful sync, skipping PR."
+            exit 0
+          fi
+
+          git push --force-with-lease origin "$BRANCH"
+
+          # Only skip creation if an OPEN PR already exists for this branch
+          if ! gh pr view "$BRANCH" --json state -q .state 2>/dev/null | grep -qx OPEN; then
+            gh pr create \
+              --base "$BASE" \
+              --head "$BRANCH" \
+              --title "chore: sync with module template" \
+              --label vega-renovate-ops \
+              --body "Automated sync from the Terraform module template. Resolve any \`.rej\` conflict files before merging."
+          fi
