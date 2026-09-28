@@ -9,12 +9,6 @@ variable "environment" {
   description = "Environment"
 }
 
-variable "region" {
-  type        = string
-  description = "AWS Region"
-  default     = "eu-central-2"
-}
-
 variable "db_name" {
   type        = string
   description = "Database name"
@@ -78,13 +72,15 @@ variable "instances" {
 }
 
 variable "serverless_min_capacity" {
-  type    = number
-  default = 0.5
+  type        = number
+  description = "Minimum Aurora Serverless v2 capacity in ACUs."
+  default     = 0.5
 }
 
 variable "serverless_max_capacity" {
-  type    = number
-  default = 4
+  type        = number
+  description = "Maximum Aurora Serverless v2 capacity in ACUs."
+  default     = 4
 }
 
 variable "manage_master_user_password_rotation" {

@@ -100,6 +100,8 @@ module "rds_proxy" {
 
 data "aws_caller_identity" "current" {}
 
+data "aws_region" "current" {}
+
 # RDS Proxy role — self-managed so the trust policy includes confused-deputy protection
 # (aws:SourceAccount). Permissions mirror what the rds-proxy module would otherwise attach:
 # decrypt the credentials secret via Secrets Manager and read it.
@@ -132,7 +134,7 @@ data "aws_iam_policy_document" "rds_proxy" {
     condition {
       test     = "StringEquals"
       variable = "kms:ViaService"
-      values   = ["secretsmanager.${var.region}.amazonaws.com"]
+      values   = ["secretsmanager.${data.aws_region.current.region}.amazonaws.com"]
     }
   }
 
