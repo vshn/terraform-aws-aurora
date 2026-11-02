@@ -66,7 +66,10 @@ module "aurora" {
 
   backup_retention_period = var.backup_retention_period
   preferred_backup_window = var.preferred_backup_window
-  deletion_protection     = var.deletion_protection
+
+  preferred_maintenance_window = var.preferred_maintenance_window
+
+  deletion_protection = var.deletion_protection
 }
 
 module "rds_proxy" {

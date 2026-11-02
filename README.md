@@ -57,6 +57,7 @@ Destroying the cluster always takes a final snapshot named
 | `serverless_max_capacity` | Maximum ACUs | `number` | `4` | no |
 | `backup_retention_period` | Days of automated backups; also the PITR window (AWS caps at 35) | `number` | `7` | no |
 | `preferred_backup_window` | UTC backup window | `string` | `"02:00-03:00"` | no |
+| `preferred_maintenance_window` | UTC weekly window for AWS system maintenance, e.g. `tue:22:00-tue:23:00`. Unset means AWS picks one | `string` | `null` | no |
 | `deletion_protection` | Deletion protection on the cluster | `bool` | `true` | no |
 | `enforce_db_tls` | Set `require_secure_transport = ON` | `bool` | `true` | no |
 | `enabled_cloudwatch_logs_exports` | Log types to export (`audit`, `error`, `general`, `slowquery`); `audit` needs `enable_audit_log` | `list(string)` | `[]` | no |
