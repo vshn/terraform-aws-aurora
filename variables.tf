@@ -54,6 +54,17 @@ variable "preferred_backup_window" {
   default     = "02:00-03:00"
 }
 
+variable "preferred_maintenance_window" {
+  type        = string
+  description = "Weekly time range in which AWS may apply system maintenance, in UTC, e.g. tue:22:00-tue:23:00. Must not overlap preferred_backup_window."
+  default     = null
+
+  validation {
+    condition     = var.preferred_maintenance_window == null || can(regex("^(mon|tue|wed|thu|fri|sat|sun):([01][0-9]|2[0-3]):[0-5][0-9]-(mon|tue|wed|thu|fri|sat|sun):([01][0-9]|2[0-3]):[0-5][0-9]$", var.preferred_maintenance_window))
+    error_message = "The maintenance window must look like ddd:hh24:mi-ddd:hh24:mi in lowercase UTC, for example tue:22:00-tue:23:00."
+  }
+}
+
 variable "deletion_protection" {
   type        = bool
   description = "If the DB instance should have deletion protection enabled."
