@@ -15,7 +15,7 @@ locals {
 
 module "aurora" {
   source  = "terraform-aws-modules/rds-aurora/aws"
-  version = "10.4.1"
+  version = "10.4.2"
 
   name              = var.instance_name
   engine            = "aurora-mysql"
